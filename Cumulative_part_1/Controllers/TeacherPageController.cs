@@ -5,7 +5,11 @@ using TeacherApp.Models;
 
 namespace TeacherApp.Controllers
 {
-    // API route to handle teacher-related actions
+    /// <summary>
+    /// Controller responsible for handling teacher-related API requests.
+    /// It retrieves teacher and course data from the database, filters teachers by hire date range,
+    /// and allows displaying information about teachers and courses in various formats.
+    /// </summary>
     [Route("api/[controller]")]
     public class TeacherPageController : Controller
     {
@@ -157,6 +161,24 @@ namespace TeacherApp.Controllers
             }
         }
         
+        /*
+         * <summary>
+         * Retrieves the MySQL version from the database and returns it in the response.
+         * </summary>
+         *
+         * <returns>
+         * A JSON response containing the MySQL version string.
+         * </returns>
+         *
+         * <param name="temperature">
+         * None
+         * </param>
+         *
+         * <example>
+         * GET /api/teacherpage/info
+         * Returns: "8.0.23"
+         * </example>
+         */
         [HttpGet("info")]
         public IActionResult Info()
         {
@@ -171,6 +193,25 @@ namespace TeacherApp.Controllers
             // }
         }
         
+        
+        /*
+         * <summary>
+         * Retrieves the list of all teachers and returns it serialized as JSON.
+         * </summary>
+         *
+         * <returns>
+         * A view containing the list of teachers in JSON format.
+         * </returns>
+         *
+         * <param name="temperature">
+         * None
+         * </param>
+         *
+         * <example>
+         * GET /api/teacherpage/list
+         * Returns a list of teachers in JSON format.
+         * </example>
+         */
         [HttpGet("list")]
         public IActionResult TeacherInfo()
         {
@@ -184,6 +225,29 @@ namespace TeacherApp.Controllers
             return View("List");
         }
         
+         /*
+         * <summary>
+         * Filters the teacher list by hire date range and returns the filtered list in JSON format.
+         * </summary>
+         *
+         * <returns>
+         * A view with a list of teachers within the specified hire date range.
+         * </returns>
+         *
+         * <param name="startRange">
+         * The start date for filtering teachers by their hire date.
+         * </param>
+         *
+         * <param name="endRange">
+         * The end date for filtering teachers by their hire date.
+         * </param>
+         *
+         * <example>
+         * POST /api/teacherpage/list
+         * startRange=2020-01-01&endRange=2023-12-31
+         * Returns: A list of teachers hired between the specified dates.
+         * </example>
+         */
         [HttpPost("list")]
         public IActionResult TeacherInfo([FromForm] string startRange, [FromForm] string endRange)
         {
@@ -240,11 +304,49 @@ namespace TeacherApp.Controllers
             }
         }
         
+         /*
+         * <summary>
+         * Displays the information for all teachers.
+         * </summary>
+         *
+         * <returns>
+         * A view displaying all teacher data.
+         * </returns>
+         *
+         * <param name="temperature">
+         * None
+         * </param>
+         *
+         * <example>
+         * GET /api/teacherpage/show
+         * Returns: A view with all teacher information.
+         * </example>
+         */
         [HttpGet("show")]
         public IActionResult AllTeacherInfo()
         {
             return View("Show");
         }
+        
+         /*
+         * <summary>
+         * Displays the information of a specific teacher based on their ID.
+         * </summary>
+         *
+         * <returns>
+         * A view displaying the teacher's details in JSON format.
+         * </returns>
+         *
+         * <param name="teacherId">
+         * The ID of the teacher to fetch information for.
+         * </param>
+         *
+         * <example>
+         * POST /api/teacherpage/show
+         * teacherId=3
+         * Returns: Teacher information for the teacher with ID 3.
+         * </example>
+         */
         [HttpPost("show")]
         public IActionResult AllTeacherInfo([FromForm] string teacherId)
         {
