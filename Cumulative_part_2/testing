@@ -1,0 +1,9 @@
+n01001831@archlinux:~$ curl -X POST "http://localhost:5074/api/teacherapi/teacheradd?employeeNumber=T1234&firstName=Nahid&lastName=Sekander&hireDate=2023-05-15&salary=55000"; echo 
+{"success":true,"message":"New Teacher Nahid Sekander is added successfully"}
+
+n01001831@archlinux:~$ curl -X DELETE "http://localhost:5074/api/teacherapi/teacherdelete?ID=15"; echo 
+{"success":true,"message":"Teacher 15 got deleted"}
+
+n01001831@archlinux:~$ curl -X DELETE "http://192.168.2.18:5000/api/teacherapi/teacherdelete?ID=14"; echo 
+{"success":false,"message":"Teacher 14 Not Found"}
+
