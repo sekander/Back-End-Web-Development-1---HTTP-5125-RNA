@@ -40,6 +40,7 @@ curl -X PUT "http://localhost:5074/api/teacherapi/teacheredit?teacherID=21" -H "
   "HireDate": "1111-11-11T00:00:00",
   "Salary": 50000.00
 }'
+```
 
 
 # Edit Teacher View (GET /api/teacherpage/edit)
@@ -98,6 +99,7 @@ fetch(url, {
   }
 })
 .catch(error => console.error('Error:', error));
+
 
 Key Data Flow
 Frontend:
