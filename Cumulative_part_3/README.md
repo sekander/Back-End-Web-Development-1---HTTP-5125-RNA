@@ -96,10 +96,10 @@ fetch(url, {
   } else {
     responseMessage.textContent = responseData.message;
     responseMessage.style.color = "red";
-  }
+        }
 })
 .catch(error => console.error('Error:', error));
-
+```
 
 Key Data Flow
 Frontend:
