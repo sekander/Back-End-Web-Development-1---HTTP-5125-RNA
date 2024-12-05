@@ -101,30 +101,30 @@ fetch(url, {
 .catch(error => console.error('Error:', error));
 ```
 
-Key Data Flow
-Frontend:
+### Key Data Flow 
+#### Frontend:
 
-    The frontend sends a GET request to /api/teacherpage/edit to retrieve teacher data.
-    It receives JSON data (teacher IDs and full teacher list) and populates the dropdown and form fields.
-    On form submission, the frontend sends a PUT request with the updated teacher information.
+  -  The frontend sends a GET request to /api/teacherpage/edit to retrieve teacher data.
+  -  It receives JSON data (teacher IDs and full teacher list) and populates the dropdown and form fields.
+  -  On form submission, the frontend sends a PUT request with the updated teacher information.
+   
+#### Backend:
+   
+  - Handles the GET and PUT requests.
+  - The GET request sends serialized teacher data to the frontend.
+  - The PUT request validates the data, updates the teacher information in the database, and returns a response indicating success or failure.
+   
+#### Example Flow:
+   
+ -   A user accesses the teacher edit page.
+ -   The page fetches the teacher IDs and teacher data from the backend.
+ -   The dropdown is populated with teacher IDs. When a teacher is selected, their details are pre-filled into the form.
+ -   The user edits the details and submits the form.
+ -   The frontend validates the inputs before sending a PUT request with the updated teacher information.
+ -   The backend processes the request and updates the teacher data in the database.
+ -   The frontend displays a success or failure message based on the backend response.
 
-Backend:
+#### Conclusion
 
-    Handles the GET and PUT requests.
-    The GET request sends serialized teacher data to the frontend.
-    The PUT request validates the data, updates the teacher information in the database, and returns a response indicating success or failure.
-
-Example Flow:
-
-    A user accesses the teacher edit page.
-    The page fetches the teacher IDs and teacher data from the backend.
-    The dropdown is populated with teacher IDs. When a teacher is selected, their details are pre-filled into the form.
-    The user edits the details and submits the form.
-    The frontend validates the inputs before sending a PUT request with the updated teacher information.
-    The backend processes the request and updates the teacher data in the database.
-    The frontend displays a success or failure message based on the backend response.
-
-Conclusion
-
-This application provides a seamless interface for editing teacher information. The backend API handles the data retrieval and updating logic, while the frontend allows users to interact with the data through a dynamic form. Together, they provide a functional system for managing teacher data in a web application.
+- This application provides a seamless interface for editing teacher information. The backend API handles the data retrieval and updating logic, while the frontend allows users to interact with the data through a dynamic form. Together, they provide a functional system for managing teacher data in a web application.
 
