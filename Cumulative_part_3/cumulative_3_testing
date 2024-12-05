@@ -1,0 +1,55 @@
+curl -X PUT "http://localhost:5074/api/teacherapi/teacheredit?teacherID=21"      -H "Content-Type: application/json"      -k      -d '{
+           "Id": 21,
+           "EmployeeNumber": "T0123456",
+           "FirstName": "Bahif",
+           "LastName": "sdf",
+           "HireDate": "3111-11-11T00:00:00",
+           "Salary": 1.00
+         }'
+{"success":true,"message":"Teacher 21 got editted"}
+
+
+
+ curl -X PUT "http://localhost:5074/api/teacherapi/teacheredit?teacherID=23"      -H "Content-Type: application/json"      -k      -d '{
+           "Id": 21,
+           "EmployeeNumber": "T0123456",
+           "FirstName": "Bahif",
+           "LastName": "sdf",
+           "HireDate": "3111-11-11T00:00:00",
+           "Salary": 1.00
+         }'
+{"success":false,"message":"Teacher 23 not found"}
+
+
+
+curl -X PUT "http://localhost:5074/api/teacherapi/teacheredit?teacherID=21"      -H "Content-Type: application/json"      -k      -d '{
+           "Id": 21,
+           "EmployeeNumber": "T0123456",
+           "FirstName": "",
+           "LastName": "sdf",
+           "HireDate": "1111-11-11T00:00:00",
+           "Salary": 50000.00
+         }'
+{"success":false,"message":"Teacher 21 Name cannot be empty"}
+
+curl -X PUT "http://localhost:5074/api/teacherapi/teacheredit?teacherID=21"      -H "Content-Type: application/json"      -k      -d '{
+           "Id": 21,
+           "EmployeeNumber": "T0123456",
+           "FirstName": "sjldf",
+           "LastName": "sdf",
+           "HireDate": "3111-11-11T00:00:00",
+           "Salary": 50000.00
+         }'
+{"success":false,"message":"Teacher 21 Hire Date cannot be in the future"}
+
+
+curl -X PUT "http://localhost:5074/api/teacherapi/teacheredit?teacherID=21"      -H "Content-Type: application/json"      -k      -d '{
+           "Id": 21,
+           "EmployeeNumber": "T0123456",
+           "FirstName": "sjldf",
+           "LastName": "sdf",
+           "HireDate": "1111-11-11T00:00:00",
+           "Salary": -1.00
+         }'
+{"success":false,"message":"Teacher 21 Salary cannot be less than zero"}
+

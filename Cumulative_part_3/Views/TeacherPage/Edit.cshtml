@@ -1,0 +1,274 @@
+@{
+    Layout = "_Layout";  // This tells the view to use the _Layout.cshtml file
+
+    // Get the teacher info (either a message or JSON)
+    var jsonData = ViewData["TeacherIDJson"];
+    var jsonTeacherData = ViewData["TeacherJson"];
+    //bool teacherNotFound = jsonData == "Teacher not found";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Edit</title>
+    <style>
+        /* Basic styling for displaying teacher info */
+        pre {
+            font-family: "Courier New", monospace;
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ccc;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        /* General Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+        }
+
+        /* Main Table Header */
+        thead tr {
+            background-color: #333;
+            color: #110f0f;
+            text-align: left;
+        }
+
+        /* Header Cell Styling */
+        thead th {
+            padding: 12px;
+            border-bottom: 2px solid #444;
+        }
+
+        /* Body Rows */
+        tbody tr {
+            background-color: #f2f2f2;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Alternating Row Colors */
+        tbody tr:nth-child(even) {
+            background-color: #e9e9e9;
+        }
+
+        /* Hover Effect */
+        tbody tr:hover {
+            background-color: #d1e7dd;
+        }
+
+        /* Table Cell Padding */
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Nested Table Styling */
+        tbody td table {
+            width: 90%;
+            margin: 10px auto;
+            border: 1px solid #ccc;
+            background-color: #fafafa;
+        }
+
+        /* Nested Table Header */
+        tbody td table thead {
+            background-color: #4b8bbd;
+            color: #fff;
+        }
+
+        tbody td table th {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Nested Table Body */
+        tbody td table td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Style for Course Title */
+        tbody td h3 {
+            margin-top: 10px;
+            font-size: 1.2em;
+            color: #333;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Edit Teacher</h1>
+
+     <h2>Select Teacher ID</h2>
+
+    <!-- Dropdown list -->
+    <select id="dropdown"></select>
+
+    <div id="teacherAddForm">
+        <script>
+            var jsonData = @Html.Raw(Json.Serialize(jsonData));
+
+            var teacherData = JSON.parse(jsonData);
+
+            const dropDownHTML = document.getElementById('dropdown');
+
+            teacherData.forEach(item => {
+                const option = document.createElement("option");
+                option.value = item;  // Set the value of the option
+                option.textContent = item;  // Set the text shown in the dropdown
+                dropdown.appendChild(option);
+            }); 
+
+        </script>
+
+    <form id="teacherEditForm">
+            <label for="teacherEmpID">Employee Number:</label>
+                <input type="text" id="teacherEmpID" name="teacherEmpID" required>
+                
+            <label for="teacherFirstName">First Name:</label>
+                <input type="text" id="teacherFirstName" name="teacherFirstName" >
+            
+            <label for="teacherLastName">Last Name:</label>
+            <input type="text" id="teacherLastName" name="teacherLastName" >
+            
+            <label for="teacherHireDate">Hire Date:</label>
+                <input type="text" id="teacherHireDate" name="teacherHireDate" required>
+            
+            <label for="teacherSalary">Salary:</label>
+                <input type="text" id="teacherSalary" name="teacherSalary" required>
+           
+            <button type="submit">Search</button>
+        </form>
+        
+            <div id="responseMessage"></div>
+
+        <script>
+            
+            var selectedTeacher;
+            
+            // Add event listener for when the selection changes
+            dropdown.addEventListener("change", function() {
+                var selectedValue = dropDownHTML.value;
+                //console.log(selectedValue);
+            
+                var jsonData = @Html.Raw(Json.Serialize(jsonTeacherData));
+                //console.log(jsonData);
+                
+                var teacherData = JSON.parse(jsonData);
+        
+                teacherData.forEach(item => {
+                    //console.log(item);
+                    if(selectedValue == item.Id)
+                    {
+                        //console.log(item);
+                        selectedTeacher = item;
+                        //console.log(item.FirstName);
+                        document.getElementById('teacherEmpID').value = item.EmployeeNumber;
+                        document.getElementById('teacherFirstName').value = item.FirstName;
+                        document.getElementById('teacherLastName').value = item.LastName;
+                        document.getElementById('teacherHireDate').value = item.HireDate;
+                        document.getElementById('teacherSalary').value = item.Salary;
+                    }
+                    
+                });
+            });
+            
+            // Get the form and response message elements
+            const teacherEditForm = document.getElementById("teacherEditForm");
+            const responseMessage = document.getElementById("responseMessage");
+
+             // Handle form submission
+            teacherEditForm.addEventListener("submit", function(event) {
+                event.preventDefault(); // Prevent form from submitting the default way
+
+                // Get form data
+                const employeeNumber = document.getElementById("teacherEmpID").value;
+                const firstName = document.getElementById("teacherFirstName").value;
+                const lastName =  document.getElementById("teacherLastName").value;
+                const hireDate =  document.getElementById("teacherHireDate").value;
+                const salary =    document.getElementById("teacherSalary").value;
+                
+                // Convert the hire date string to a Date object
+                const inputDate = new Date(hireDate);
+
+                // Get the current date (today)
+                const currentDate = new Date();
+
+                // Reset the time part to 00:00:00 for both dates (optional, to compare just the date part)
+                inputDate.setHours(0, 0, 0, 0);
+                currentDate.setHours(0, 0, 0, 0);
+
+                if(firstName === "" )
+                {
+                    alert("Teacher's First Name cannot be empty");
+                    document.getElementById('teacherFirstName').focus();
+                }
+                else if (lastName === "")
+                {
+                    alert("Teacher's Last Name cannot be empty");
+                    document.getElementById('teacherLastName').focus();
+                }
+                else if (inputDate > currentDate) {
+                    alert("Teacher's Hire Date cannot be in the future");
+                    document.getElementById('teacherHireDate').focus();
+                }
+                else if (salary < 0){
+                    alert("Teacher's Salary cannot be less than zero");
+                    document.getElementById('teacherSalary').focus();
+                }
+                else {
+                    selectedTeacher.EmployeeNumber = document.getElementById("teacherEmpID").value;
+                    selectedTeacher.FirstName = document.getElementById("teacherFirstName").value;
+                    selectedTeacher.LastName = document.getElementById("teacherLastName").value;
+                    selectedTeacher.HireDate = document.getElementById("teacherHireDate").value;
+                    selectedTeacher.Salary = document.getElementById("teacherSalary").value;
+
+                    console.log(selectedTeacher);
+                    
+                        // The URL where you want to send the PUT request
+                    const url = `http://localhost:5074/api/teacherapi/teacheredit?teacherID=${selectedTeacher.Id}`; // Replace with your actual URL
+                    console.log(url);
+                    // Use the fetch API to send the PUT request
+                    fetch(url, {
+                        method: 'PUT', // HTTP method
+                            headers: {
+                                'Content-Type': 'application/json', // Tell the server the data is JSON
+                            },
+                            body: JSON.stringify(selectedTeacher) // Convert the JavaScript object into a JSON string
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                // Handle error if response status is not OK
+                            throw new Error('Failed to update');
+                            }
+                            return response.json(); // Parse the JSON response
+                            
+                        })
+                        .then(responseData => {
+                            console.log('Response Data:', responseData); // Handle the response data
+                            if (responseData.success) {
+                                //responseMessage.textContent = "Teacher added successfully!";
+                                responseMessage.textContent = responseData.message;
+                                responseMessage.style.color = "green";
+                            } else {
+                                responseMessage.textContent = responseData.message;
+                                responseMessage.style.color = "red";
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error); // Handle any errors that occur
+                    });
+                    console.log("Form submitted!");
+                    //teacherEditForm.submit();
+                    //location.reload();
+                }
+        });
+        </script>
+</body>
+</html>

@@ -1,0 +1,234 @@
+@{
+    Layout = "_Layout";  // Specifies that this view should use the _Layout.cshtml file for consistent page layout and structure.
+
+    // The JSON data containing teacher information is passed from the controller as a string.
+    var jsonData = ViewData["TeachersJson"];
+    bool teacherNotFound = jsonData == "Teacher not found";  // Check if the passed data is "Teacher not found".
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">  <!-- Specifies the character encoding for the HTML document. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ensures responsive behavior on mobile devices. -->
+    <title>Teachers Data</title> <!-- Title of the page that appears in the browser tab. -->
+    
+    <style>
+        /* Basic styling for displaying JSON nicely */
+        pre {
+            font-family: "Courier New", monospace;
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ccc;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* General Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+        }
+
+        /* Styling for the table header */
+        thead tr {
+            background-color: #333;
+            color: #161212;
+            text-align: left;
+        }
+
+        thead th {
+            padding: 12px;
+            border-bottom: 2px solid #444;
+        }
+
+        /* Styling for body rows */
+        tbody tr {
+            background-color: #f2f2f2;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Alternating row colors */
+        tbody tr:nth-child(even) {
+            background-color: #e9e9e9;
+        }
+
+        /* Hover effect for rows */
+        tbody tr:hover {
+            background-color: #d1e7dd;
+        }
+
+        /* Styling for table cells */
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Styling for nested tables (courses within teachers) */
+        tbody td table {
+            width: 90%;
+            margin: 10px auto;
+            border: 1px solid #ccc;
+            background-color: #fafafa;
+        }
+
+        /* Styling for the nested table header */
+        tbody td table thead {
+            background-color: #4b8bbd;
+            color: #fff;
+        }
+
+        tbody td table th {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Styling for nested table body */
+        tbody td table td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Styling for course titles */
+        tbody td h3 {
+            margin-top: 10px;
+            font-size: 1.2em;
+            color: #333;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Teacher's Data</h1>
+    <h2>Teacher's Info</h2>
+    <div id="teacherInfo">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>EmployeeNumber</th>
+                    <th>FirstName</th>
+                    <th>LastName</th>
+                    <th>HireDate</th>
+                    <th>Salary</th>
+                    <th>Actions</th> <!-- Add a column for action buttons like "Delete" -->
+                </tr>
+            </thead>
+            <div id="teacherSection">
+                <tbody>
+                    <!-- Teacher data will be dynamically inserted here via JavaScript -->
+                </tbody>
+            </div>
+        </table>
+    </div>
+    <!-- Pass the JSON data to JavaScript -->
+    <script>
+        // Parse the JSON data passed from the controller (server-side)
+        var jsonData = @Html.Raw(Json.Serialize(jsonData)); // Convert server-side data to a JavaScript object.
+        console.log(jsonData);  // For debugging, logs the raw JSON data.
+
+        // If the jsonData is available (i.e., not empty), we process and display it.
+        if (jsonData) {
+            var teacherData = JSON.parse(jsonData);  // Parse the JSON string into an array of teacher objects.
+
+            console.log(teacherData);  // Log the teacher data array for debugging.
+
+            // Loop through each teacher in the data to create and display their details in the table.
+            teacherData.forEach(item => {
+                console.log(item.Id, item.FirstName);  // Log each teacher's ID and first name for debugging.
+
+                var teacherTableBody = document.querySelector("#teacherInfo tbody");  // Get the tbody of the table to insert rows.
+                var teacherRow = document.createElement("tr");  // Create a new table row for each teacher.
+                
+                // Fill the row with teacher details
+                teacherRow.innerHTML = `
+                    <td>${item.Id}</td>
+                    <td>${item.EmployeeNumber}</td>
+                    <td>${item.FirstName}</td>
+                    <td>${item.LastName}</td>
+                    <td>${new Date(item.HireDate).toLocaleDateString()}</td>  <!-- Format HireDate into a readable format -->
+                    <td>${item.Salary}</td>
+                    <td>
+                        <button class="delete-btn" data-id="${item.Id}" title="Delete">
+                            🗑
+                        </button>
+                    </td>
+                `;
+                
+                teacherTableBody.appendChild(teacherRow);  // Append the new row to the table body.
+
+                // Check if the teacher has courses assigned
+                if (item.Courses && item.Courses.length > 0) {
+
+                    // Loop through each course assigned to the teacher and display it in a nested table.
+                    item.Courses.forEach(c => {
+                        console.log(c.CourseId, c.CourseName);  // Log each course ID and name for debugging.
+
+                        // Create a row for the courses associated with the teacher.
+                        const coursesHeaderRow = document.createElement("tr");
+
+                        // Add a nested table for courses
+                        coursesHeaderRow.innerHTML = `
+                        <td colspan="6">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>CourseId</th>
+                                        <th>CourseName</th>
+                                        <th>CourseCode</th>
+                                        <th>StartDate</th>
+                                        <th>EndDate</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>${c.CourseId}</td>
+                                        <td>${c.CourseName}</td>
+                                        <td>${c.CourseCode}</td>
+                                        <td>${c.StartDate}</td>
+                                        <td>${c.EndDate}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    `;
+                    teacherTableBody.appendChild(coursesHeaderRow);  // Append the course details row.
+                    });
+                }
+            });
+
+            // Add event listeners to all delete buttons to allow deletion of a teacher.
+            document.querySelectorAll(".delete-btn").forEach(button => {
+                button.addEventListener("click", function(event) {
+                    var teacherId = event.target.getAttribute("data-id");  // Get the teacher ID from the button's data attribute.
+                    console.log(teacherId);  // Log the ID for debugging.
+
+                    // Confirm with the user before proceeding with the deletion.
+                    if (confirm(`Are you sure you want to delete teacher with ID ${teacherId}?`)) {
+
+                        // Example: Send a DELETE request to the backend to delete the teacher.
+                        fetch(`http://localhost:5074/api/teacherapi/teacherdelete?ID=${teacherId}`, { method: 'DELETE' })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log(data.message);  // Log the server response message.
+                                if (data.success) {
+                                    // If deletion is successful, remove the teacher row from the table.
+                                    event.target.closest("tr").remove();
+                                } else {
+                                    alert("Failed to delete teacher.");  // Alert if deletion fails.
+                                }
+                            })
+                            .catch(error => {
+                                console.error("Error deleting teacher:", error);
+                                alert("An error occurred while deleting the teacher.");  // Alert on error.
+                            });
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>

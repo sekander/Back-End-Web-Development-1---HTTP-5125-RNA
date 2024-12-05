@@ -1,0 +1,183 @@
+@{
+    Layout = "_Layout";  // This tells the view to use the _Layout.cshtml file
+
+    // Get the teacher info (either a message or JSON)
+    //var jsonData = ViewData["TeacherJson"];
+    //bool teacherNotFound = jsonData == "Teacher not found";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Add</title>
+    <style>
+        /* Basic styling for displaying teacher info */
+        pre {
+            font-family: "Courier New", monospace;
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ccc;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        /* General Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+        }
+
+        /* Main Table Header */
+        thead tr {
+            background-color: #333;
+            color: #110f0f;
+            text-align: left;
+        }
+
+        /* Header Cell Styling */
+        thead th {
+            padding: 12px;
+            border-bottom: 2px solid #444;
+        }
+
+        /* Body Rows */
+        tbody tr {
+            background-color: #f2f2f2;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Alternating Row Colors */
+        tbody tr:nth-child(even) {
+            background-color: #e9e9e9;
+        }
+
+        /* Hover Effect */
+        tbody tr:hover {
+            background-color: #d1e7dd;
+        }
+
+        /* Table Cell Padding */
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Nested Table Styling */
+        tbody td table {
+            width: 90%;
+            margin: 10px auto;
+            border: 1px solid #ccc;
+            background-color: #fafafa;
+        }
+
+        /* Nested Table Header */
+        tbody td table thead {
+            background-color: #4b8bbd;
+            color: #fff;
+        }
+
+        tbody td table th {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Nested Table Body */
+        tbody td table td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Style for Course Title */
+        tbody td h3 {
+            margin-top: 10px;
+            font-size: 1.2em;
+            color: #333;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Add New Teacher</h1>
+
+    <div id="teacherAddForm">
+    <!-- Form for searching teacher by ID-->
+            
+        <form method="POST">
+            <label for="teacherEmpID">Employee Number:</label>
+                <input type="text" id="teacherEmpID" name="teacherEmpID" required>
+                
+            <label for="teacherFirstName">First Name:</label>
+                <input type="text" id="teacherFirstName" name="teacherFirstName" required>
+            
+            <label for="teacherLastName">Last Name:</label>
+                <input type="text" id="teacherLastName" name="teacherLastName" required>
+            
+            <label for="teacherHireDate">Hire Date:</label>
+                <input type="text" id="teacherHireDate" name="teacherHireDate" required>
+            
+            <label for="teacherSalary">Salary:</label>
+                <input type="text" id="teacherSalary" name="teacherSalary" required>
+           
+            <button type="submit">Search</button>
+        </form>
+        
+            <div id="responseMessage"></div>
+
+        <script>
+            // Get the form and response message elements
+            const teacherAddForm = document.getElementById("teacherAddForm");
+            const responseMessage = document.getElementById("responseMessage");
+
+             // Handle form submission
+            teacherAddForm.addEventListener("submit", function(event) {
+                    event.preventDefault(); // Prevent form from submitting the default way
+
+                // Get form data
+                const employeeNumber = document.getElementById("teacherEmpID").value;
+                const firstName = document.getElementById("teacherFirstName").value;
+                const lastName = document.getElementById("teacherLastName").value;
+                const hireDate = document.getElementById("teacherHireDate").value;
+                const salary = document.getElementById("teacherSalary").value;
+
+                // Build the query parameters
+                const queryParams = new URLSearchParams({
+                    employeeNumber,
+                    firstName,
+                    lastName,
+                    hireDate,
+                    salary
+                }).toString();
+                
+                console.log(queryParams);
+
+                // Make the AJAX call using fetch
+                fetch(`http://localhost:5074/api/teacherapi/teacheradd?${queryParams}`, {
+                    method: 'POST'
+                })
+                .then(response => response.json())  // Assuming the API returns JSON
+                .then(data => {
+                        console.log(data);
+                //if (data === "Teacher added successfully.") {
+                        if (data.success) {
+                        //responseMessage.textContent = "Teacher added successfully!";
+                        responseMessage.textContent = data.message;
+                        responseMessage.style.color = "green";
+                    } else {
+                        responseMessage.textContent = data.message;
+                        responseMessage.style.color = "red";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    responseMessage.textContent = "An error occurred while adding the teacher.";
+                    responseMessage.style.color = "red";
+                });
+        });
+        </script>
+</body>
+</html>
