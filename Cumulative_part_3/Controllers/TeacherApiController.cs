@@ -529,6 +529,22 @@ namespace TeacherApp.Controllers
                                         salary = {editTeacher.Salary} 
                                     WHERE employeenumber = '{editTeacher.EmployeeNumber}'";
 
+
+		     //This prevents sql injection
+		     // Assuming you have a SqlCommand object:
+		     using (SqlCommand cmd = new SqlCommand(query, connection))
+		     {
+			    // Add parameters and their values
+			    cmd.Parameters.AddWithValue("@employeeNumber", employeeNumber);
+			    cmd.Parameters.AddWithValue("@firstName", firstName);
+			    cmd.Parameters.AddWithValue("@lastName", lastName);
+			    cmd.Parameters.AddWithValue("@hireDate", hireDate);
+			    cmd.Parameters.AddWithValue("@salary", salary);
+
+			    // Execute the query (e.g., for an INSERT)
+			    cmd.ExecuteNonQuery();
+		     }
+
                     _db.ExecuteQuery(query);
 
                     //return Ok();
